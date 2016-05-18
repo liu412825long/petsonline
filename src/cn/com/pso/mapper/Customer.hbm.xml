@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping  package="cn.com.pso.entity">
+	<class name="Customer" table="CUSTOMER">
+		<id name="id" column="c_id" type="integer">
+			<generator class="native"></generator>
+		</id>
+		<property name="userName" column="c_userName" type="string" length="50"></property>
+		<property name="password" column="c_password" type="string" length="50"></property>
+		<property name="realName" column="c_realName" type="string" length="50"></property>
+		<property name="sex" column="c_sex" type="string" length="2"></property>
+		<property name="age" column="c_age" type="integer" length="2"></property>
+		<property name="phone" column="c_phone" type="string" length="11"></property>
+		<property name="email" column="c_email" type="string" length="100"></property>
+		<property name="idcard" column="c_idcard" type="string" length="18"></property>
+		<property name="registDate" column="c_registDate" type="date" ></property>
+	</class>
+</hibernate-mapping>

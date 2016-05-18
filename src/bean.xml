@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns:aop="http://www.springframework.org/schema/aop"
+     xmlns:context="http://www.springframework.org/schema/context"
+     xmlns:tx="http://www.springframework.org/schema/tx"
+     xsi:schemaLocation="http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd
+         http://www.springframework.org/schema/aop
+         http://www.springframework.org/schema/aop/spring-aop.xsd
+          http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+     <!-- 读取本地的属性文件 -->
+	 <context:property-placeholder  location="classpath:jdbc.properties" />
+	 
+	 <!-- 建立数据源 -->
+	 <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialSize" value="${jdbc.initialSize}" />
+		<property name="maxActive" value="${jdbc.maxActive}" />
+		<property name="maxIdle" value="${jdbc.maxIdle}" />
+		<property name="minIdle" value="${jdbc.minIdle}" />
+	</bean>
+	
+	<!-- 建立SessionFactory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		
+		<property name="hibernateProperties">
+			<props>
+			<!-- 配置oracle数据库 的方言-->
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle9Dialect</prop>
+				
+				<!--当show_sql属性为true时表示在程序运行时在控制台输出SQL语句，
+				默认为false，建议在调试程序时设为true，
+				发布程序之前再改为false,因为输出SQL语句会影响程序的运行速度-->
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">false</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		
+		<property name="mappingResources">
+			<list>
+				<value>cn/com/pso/mapper/Manager.hbm.xml</value>
+				<value>cn/com/pso/mapper/PetsType.hbm.xml</value>
+				<value>cn/com/pso/mapper/Dog.hbm.xml</value>
+				<value>cn/com/pso/mapper/Pictures.hbm.xml</value>
+				<value>cn/com/pso/mapper/LoginHistory.hbm.xml</value>
+				<value>cn/com/pso/mapper/Customer.hbm.xml</value>
+				<value>cn/com/pso/mapper/Address.hbm.xml</value>
+				<value>cn/com/pso/mapper/ShopCar.hbm.xml</value>
+				<value>cn/com/pso/mapper/Collection.hbm.xml</value>
+				<value>cn/com/pso/mapper/Comment.hbm.xml</value>
+			</list>
+		</property>
+		</bean>
+		
+		
+		<bean id="transactionManager"
+			class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+			<property name="sessionFactory" ref="sessionFactory" />
+		</bean>
+		
+		
+		<!-- 使用AOP监听事务 
+		表达式的设置:一定设置到Service层
+	-->
+	<aop:config>
+		<aop:pointcut id="allMethods" expression="execution(* cn.com.pso.service.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="allMethods" />
+	</aop:config>
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="add*" propagation="REQUIRED" />
+			<tx:method name="update*" propagation="REQUIRED" />
+			<tx:method name="del*" propagation="REQUIRED" />
+			<tx:method name="save*" propagation="REQUIRED" />
+			<tx:method name="mod*" propagation="REQUIRED" />
+			<tx:method name="*Add" propagation="REQUIRED" />
+			<tx:method name="*Del*" propagation="REQUIRED" />
+			<tx:method name="*Update" propagation="REQUIRED" />
+			<tx:method name="*Save" propagation="REQUIRED" />
+		</tx:attributes>
+	</tx:advice>
+	
+	<!-- 切换语言的Action -->
+		<bean id="changeLanAction" class="cn.com.pso.action.ChangeLanguage" />
+		
+		<!-- 基本的baseDao -->
+		<bean id="baseDao" class="cn.com.pso.dao.impl.BaseDao">
+			<property name="sessionFactory" ref="sessionFactory"></property>
+		</bean>
+		<!-- 封装好的管理员的Dao -->
+		<bean id="managerDao" class="cn.com.pso.dao.impl.ManagerDao">
+			<property name="baseDao" ref="baseDao"></property>
+		</bean>
+		<!-- 管理员表的Service -->
+		<bean id="managerService" class="cn.com.pso.service.impl.ManagerServiceImpl">
+			<property name="managerDao" ref="managerDao"></property>
+		</bean>
+		<!-- 管理员表的Action -->
+		<bean id="managerAction" class="cn.com.pso.action.ManagerAction">
+			<property name="managerService" ref="managerService"></property>
+			<property name="loginHistoryService" ref="loginHistoryService"></property>
+		</bean>
+		
+		<!-- 宠物类型表的Dao -->
+		<bean id="petsTypeDao" class="cn.com.pso.dao.impl.PetsTypeDaoImpl">
+			<property name="baseDao" ref="baseDao"></property>
+		</bean>
+		<!-- 宠物类型管理的Service -->
+		<bean id="petsTypeService" class="cn.com.pso.service.impl.PetsTypeServiceImpl">
+				<property name="petsTypeDao" ref="petsTypeDao"></property>
+		</bean>
+		<!-- 宠物类型管理的Action -->
+		<bean id="petsTypeAction" class="cn.com.pso.action.PetsTypeAction">
+			<property name="petsTypeService" ref="petsTypeService"></property>
+		</bean>
+		
+		<bean id="petsDao" class="cn.com.pso.dao.impl.PetsDaoImpl">
+			<property name="baseDao" ref="baseDao"></property>
+		</bean>
+		<bean id="petsService" class="cn.com.pso.service.impl.PetsServiceImpl">
+			<property name="petsDao" ref="petsDao"></property>
+			<property name="pictureService" ref="pictureService"></property>
+		</bean>
+		<bean id="petsAction" class="cn.com.pso.action.PetsAction">
+			<property name="petsService" ref="petsService"/>
+			<property name="pictureService" ref="pictureService"></property>
+			<property name="petsTypeService" ref="petsTypeService"></property>
+			<property name="addressService" ref="addressService"></property>
+			<property name="commentService" ref="commentService"></property>
+		</bean>
+		
+		<bean id="pictureDao" class="cn.com.pso.dao.impl.PictureDaoImpl">
+			<property name="baseDao" ref="baseDao"></property>
+		</bean>
+		<bean id="pictureService" class="cn.com.pso.service.impl.PictureServiceImpl">
+			<property name="pictureDao" ref="pictureDao"></property>		
+		</bean>
+		
+		<bean id="loginHistoryDao" class="cn.com.pso.dao.impl.LoginHistoryDaoImpl">
+			<property name="baseDao" ref="baseDao"></property>
+		</bean>
+		<bean id="loginHistoryService" class="cn.com.pso.service.impl.LoginHistoryServiceImpl">
+			<property name="loginHistoryDao" ref="loginHistoryDao"></property>
+		</bean>
+		
+		<bean id="historyAction" class="cn.com.pso.action.HistoryAction">
+			<property name="loginHistoryService" ref="loginHistoryService"></property>
+		</bean>
+		<bean id="customerDao" class="cn.com.pso.dao.impl.CustomerDaoImpl">
+			<property name="baseDao" ref="baseDao"/>
+		</bean>
+		<bean id="customerService" class="cn.com.pso.service.impl.CustomerServiceImpl">
+			<property name="customerDao" ref="customerDao"></property>
+		</bean>
+		<bean id="customerAction" class="cn.com.pso.action.CustomerAction">
+			<property name="customerService" ref="customerService"/>
+		</bean>
+		<bean id="collectionDao" class="cn.com.pso.dao.impl.CollectionDaoImpl">
+			<property name="baseDao" ref="baseDao"/>
+		</bean>
+		<bean id="collectionService" class="cn.com.pso.service.impl.CollectionServiceImpl">
+			<property name="collectionDao" ref="collectionDao"></property>
+		</bean>
+		<bean id="collectionAction" class="cn.com.pso.action.CollectionAction">
+			<property name="collectionService" ref="collectionService"></property>
+		</bean>
+		
+		<bean id="addressDao" class="cn.com.pso.dao.impl.AddressDaoImpl">
+			<property name="baseDao" ref="baseDao"></property>
+		</bean>
+		<bean id="addressService" class="cn.com.pso.service.impl.AddressServiceImpl">
+			<property name="addressDao" ref="addressDao" ></property>
+		</bean>
+		<bean id="addressAction" class="cn.com.pso.action.AddressAction">
+			<property name="addressService" ref="addressService"/>
+		</bean>
+		
+		<bean id="shopCarDao" class="cn.com.pso.dao.impl.ShopCarDaoImpl">
+			<property name="baseDao" ref="baseDao"/>
+		</bean>
+		<bean id="shopCarService" class="cn.com.pso.service.impl.ShopCarServiceImpl">
+			<property name="shopCarDao" ref="shopCarDao"/>
+		</bean>
+		<bean id="shopCarAction" class="cn.com.pso.action.ShopCarAction">
+			<property name="shopCarService" ref="shopCarService"></property>
+			<property name="petsService" ref="petsService"></property>
+		</bean>
+		
+		<bean id="commentDao" class="cn.com.pso.dao.impl.CommentDaoImpl">
+			<property name="baseDao" ref="baseDao"></property>
+		</bean>
+		<bean id="commentService" class="cn.com.pso.service.impl.CommentService">
+			<property name="commentDao" ref="commentDao"></property>
+		</bean>
+		<bean id="commentAction" class="cn.com.pso.action.CommentAction">
+			<property name="commentService" ref="commentService"></property>
+			<property name="shopCarService" ref="shopCarService"></property>
+		</bean>
+		
+</beans>

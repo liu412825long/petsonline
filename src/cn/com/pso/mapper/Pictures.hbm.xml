@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping  package="cn.com.pso.entity">
+	<class name="Pictures" table="PICTURES">
+		<id name="id" column="p_id" type="integer" >
+			<generator class="native"></generator>
+		</id>
+		<property name="petsType" type="string" length="20" column="p_petsType" ></property>
+		<property name="refId" type="integer" column="p_refid"></property>
+		<property name="pictureName" type="string" column="p_picture" length="100"></property>
+	</class>
+</hibernate-mapping>

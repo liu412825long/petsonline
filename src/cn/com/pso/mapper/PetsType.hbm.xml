@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping  package="cn.com.pso.entity">
+	<class name="PetsType" table="PETSTYPE">
+		<id name="id" column="pt_id" type="integer">
+			<generator class="native"></generator>
+		</id>
+		<property name="bigType" column="pt_bigType" type="string" length="10"></property>
+		<property name="smallType" column="pt_smallType" type="string" length="20"></property>
+		<property name="home" column="pt_home" type="string" length="20"></property>
+		<property name="status" column="pt_status" type="string" length="5"  ></property>
+		<property name="typeIntroduce" column="pt_typeIntroduce" type="string" length="500"></property>
+	</class>
+</hibernate-mapping>

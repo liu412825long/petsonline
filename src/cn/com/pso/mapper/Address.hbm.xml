@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping  package="cn.com.pso.entity">
+	<class name="Address" table="ADDRESS">
+		<id name="id" column="a_id" type="integer">
+			<generator class="native"></generator>
+		</id>
+		<many-to-one name="customer" column="a_customer" class="Customer" foreign-key="FK_customer"></many-to-one>
+		<property name="defaultAddress" column="c_defaultAddress" type="integer" length="1"></property>
+		<property name="address" column="c_address" type="string" length="200"></property>
+	</class>
+</hibernate-mapping>

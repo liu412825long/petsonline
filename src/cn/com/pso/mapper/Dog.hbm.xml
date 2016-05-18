@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping  package="cn.com.pso.entity">
+	<class name="Dog" table="DOG">
+		<id name="id" column="d_id" type="integer">
+			<generator class="native"></generator>
+		</id>
+		<many-to-one name="petsType" column="d_ptID" lazy="false" class="PetsType" foreign-key="FK_DOG" ></many-to-one>
+		<property name="shape" column="d_shape" type="string" length="5"></property>
+		<property name="sex" column="d_sex" type="string" length="5"></property>
+		<property name="life" column="d_life" type="integer" length="2"></property>
+		<property name="height" column="d_height" type="integer" length="2" ></property>
+		<property name="width" column="d_width" type="integer" length="2"></property>
+		<property name="woolLength" column="d_woolLength" type="string" length="5"></property>
+		<property name="color" column="d_color" type="string" length="10"></property>
+		<property name="salePrice" column="d_salePrice" type="float"></property>
+		<property name="count" column="d_count" type="integer" length="3"></property>
+		<property name="describe" column="d_describe" type="string" length="200"></property>
+		<property name="defaultPicture" column="d_defaultPicture" type="string" length="100"></property>
+	</class>
+</hibernate-mapping>

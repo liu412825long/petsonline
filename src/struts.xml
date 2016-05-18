@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<constant name="struts.multipart.maxSize" value="10000000" />
+	<constant name="struts.devMode" value="false" />
+	<constant name="struts.custom.i18n.resources" value="resource"></constant>
+	
+	<package name="default" namespace="/"  extends="json-default,struts-default" >
+	
+	<!-- 设置拦截器-->
+ 	<interceptors>
+			<interceptor name="interceptor" class="cn.com.pso.interceptor.BackgroundInterceptor">
+			
+			</interceptor>
+			
+			<interceptor-stack name="mystack">
+		 	
+		<!-- 	这里一定要 配置默认的interceptor，否则就会在action里面得不到从jsp页面传过来的值，
+			就会爆空指针异常。
+			 -->
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+				<interceptor-ref name="interceptor"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		
+		<default-interceptor-ref name="mystack"></default-interceptor-ref>
+		
+		<global-results>
+			<result name="backgroundLogin" type="redirect">/background/login.jsp</result>
+			<result name="foregroundLogin" type="redirect">/login.jsp</result>
+			<result name="error" type="redirect">/error.jsp</result>
+		</global-results>
+	
+	 
+		<!-- 切换语言的Action配置 -->
+		<action name="changeLanAction" class="cn.com.pso.action.ChangeLanguage">
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+			<result name="success">/${currentPage}</result>
+		</action>
+		
+		<action name="*managerAction" class="managerAction" method="{1}">
+			<result name="success">/background/jsp/index.jsp</result>
+			<result name="error">/background/login.jsp</result>
+			<result name="loginOut">/background/login.jsp</result>
+			<result name="add" type="redirectAction">queryAllmanagerAction</result>
+			<result name="deleteUser" type="redirectAction">queryAllmanagerAction</result>
+			<result name="updateUser" type="redirectAction">${toJsp}</result>
+			<result name="queryAll">/background/jsp/user_list.jsp</result>
+			<result name="queryOne">/background/jsp/user_modify.jsp</result>
+			<result name="queryDetail">/background/jsp/${toJsp}</result>
+			<result name="updatePassword">/background/jsp/password_modify.jsp</result>
+			<result name="beforeUpdatePass">/background/jsp/password_modify.jsp</result>
+			<result name="getMessage" type="json">
+			<param name="root">jsp</param>
+			<param name="ignoreHierarchy">false</param>
+			</result>
+		</action>
+		
+		<action name="*LhAction" class="historyAction" method="{1}">
+			<result name="queryHistory">/background/jsp/history_list.jsp</result>
+			<result name="querySingleHistory">/background/jsp/history_single.jsp</result>
+		</action>
+		
+		<action name="*ptAction" class="petsTypeAction" method="{1}">
+			<result name="success">/background/jsp/petstype_list.jsp</result>
+			<result name="queryBigType">/background/jsp/petstype_add.jsp</result>
+			<result name="queryOne">/background/jsp/petstype_modify.jsp</result>
+			<result name="querySuccess">/background/jsp/pets_add.jsp</result>
+			<result name="addPetsType" type="redirectAction">queryPageBeanptAction?resultFlg=add</result>
+			<result name="delete" type="redirectAction">queryPageBeanptAction?resultFlg=delete</result>
+			<result name="deleteMany" type="redirectAction">queryPageBeanptAction?resultFlg=delete</result>
+			<result name="update" type="redirectAction">queryPageBeanptAction?resultFlg=update</result>
+		</action>
+		
+		<action name="*PetsAction" class="petsAction" method="{1}">
+			<result name="add" type="redirectAction">queryPetsPetsAction?resultFlg=${resultFlg}</result>
+			<result name="delete" type="redirectAction">queryPetsPetsAction?resultFlg=${resultFlg}</result>
+			<result name="query" >/background/jsp/pets_list.jsp</result>
+			<result name="detailInfo" >/background/jsp/pets_detail.jsp</result>
+			<result name="modify" >/background/jsp/dog_modify.jsp</result>
+			<result name="modifyPets"  type="chain">detailPetInfoPetsAction</result>
+			<result name="queryPetsQian" >/main.jsp</result>
+			<result name="queryOneQian" >/single.jsp</result>
+			<result name="confirmGet" >/foreground/jsp/confirm.jsp</result>
+		</action>
+		<action name="*CustomerAction" class="customerAction" method="{1}">
+			<result name="addCustomer"  >/index.jsp</result>
+			<result name="loginSuccess"  >/index.jsp</result>
+			<result name="loginOut"  >/index.jsp</result>
+			<result name="loginFail"  >/login.jsp</result>
+			<result name="isExist" type="json"  ></result>
+			<result name="queryAll" >/background/jsp/customer_list.jsp</result>
+		</action>
+		
+		<action name="*CollectionAction" class="collectionAction" method="{1}">
+			<result name="addCollection" type="chain">queryAllCollectionAction</result>
+			<result name="queryAll" >/foreground/jsp/collection.jsp</result>
+			<result name="delete" type="chain">queryAllCollectionAction</result>
+			<result name="validateCollection" type="json" >
+			<param name="root">result</param>
+			<param name="ignoreHierarchy">false</param>
+			</result>
+		</action>
+		<action name="*AddressAction" class="addressAction" method="{1}">
+			<result name="addAddress" type="chain">queryAllAddressAddressAction</result>
+			<result name="modifyDefaultAddress" type="chain">queryAllAddressAddressAction</result>
+			<result name="queryAllAddress">/foreground/jsp/address_add.jsp</result>
+		</action>
+		<action name="*ShopCarAction" class="shopCarAction" method="{1}">
+			<result name="addOrder">/foreground/jsp/ok.jsp</result>
+			<result name="queryAll">/foreground/jsp/shopcar.jsp</result>
+			<result name="queryAllHou">/background/jsp/order_list.jsp</result>
+			<result name="toComment">/foreground/jsp/comment.jsp</result>
+			<result name="updateOrder" type="chain">${toJsp}ShopCarAction</result>
+		</action>
+		<action name="*CommentAction" class="commentAction" method="{1}">
+			<result name="queryAll">/foreground/jsp/comment_list.jsp</result>
+			<result name="addComment" type="chain">queryAllCommentAction</result>
+		</action>
+	</package>
+
+</struts>    

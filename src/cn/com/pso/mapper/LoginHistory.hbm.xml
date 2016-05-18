@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping  package="cn.com.pso.entity">
+	<class name="LoginHistory" table="LOGINHISTORY">
+		<id name="id" column="lh_id" type="integer" >
+			<generator class="native"></generator>
+		</id>
+		<many-to-one name="manager" column="lh_mid" lazy="false" class="Manager" foreign-key="FK_Manager"></many-to-one>
+		<property name="lastLogin" column="lh_lastLogin" type="timestamp"></property>
+	</class>
+</hibernate-mapping>

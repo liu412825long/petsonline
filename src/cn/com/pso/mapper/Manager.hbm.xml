@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping  package="cn.com.pso.entity">
+	<class name="Manager" table="manager">
+		<id name="id" column="p_id" type="integer">
+			<generator class="native"></generator>
+		</id>
+		<property name="authorityRank" column="p_authorityrank" type="integer" length="1"></property>
+		<property name="username" column="p_username" type="string" length="50"></property>
+		<property name="password" column="p_password" type="string" length="50"></property>
+		<property name="realName" column="p_realname" type="string" length="20"></property>
+		<property name="sex" column="p_sex" type="string" length="2"></property>
+		<property name="age" column="p_age" type="integer" length="3"></property>
+		<property name="phone" column="p_phone" type="string" length="11"></property>
+		<property name="email" column="p_email" type="string" length="50"></property>
+		<property name="address" column="p_address" type="string" length="100" ></property>
+		<property name="idcard" column="p_idcard" type="string" length="18" ></property>
+	</class>
+</hibernate-mapping>

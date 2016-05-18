@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping  package="cn.com.pso.entity">
+	<class name="ShopCar" table="SHOPCAR">
+		<id name="id" column="sc_id" type="integer">
+			<generator class="native"></generator>
+		</id>
+		<property name="tableName" column="sc_tableName" type="string" length="10"></property>
+		<property name="orderId" column="sc_orderid" type="long"></property>
+		<property name="petsId" column="sc_petsId" type="integer"></property>
+		<many-to-one name="customer" column="sc_customer" class="Customer" lazy="false" foreign-key="FK_Customer"></many-to-one>
+		<property name="orderDate" column="sc_orderDate" type="timestamp"></property>
+		<property name="orderCount" column="sc_orderCount" type="integer"></property>
+		<property name="status" column="sc_status" type="string" length="10"></property>
+		<property name="address" column="sc_address" type="string" length="200"></property>
+	</class>
+</hibernate-mapping>
